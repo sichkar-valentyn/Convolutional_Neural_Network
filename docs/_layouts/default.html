@@ -1,0 +1,682 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <link rel="stylesheet" type="text/css" media="screen" href="/Convolutional_Neural_Network/assets/css/style.css?v=cd9ef7d7e4d12595bcc2350d318080ef9448a9b4">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Convolutional Neural Networks with Python | Convolutional_Neural_Network</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Convolutional Neural Networks with Python" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Convolutional Neural Network" />
+<meta property="og:description" content="Convolutional Neural Network" />
+<link rel="canonical" href="https://sichkar-valentyn.github.io/Convolutional_Neural_Network/" />
+<meta property="og:url" content="https://sichkar-valentyn.github.io/Convolutional_Neural_Network/" />
+<meta property="og:site_name" content="Convolutional_Neural_Network" />
+<script type="application/ld+json">
+{"@type":"WebSite","headline":"Convolutional Neural Networks with Python","url":"https://sichkar-valentyn.github.io/Convolutional_Neural_Network/","name":"Convolutional_Neural_Network","description":"Convolutional Neural Network","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/sichkar-valentyn/Convolutional_Neural_Network">View on GitHub</a>
+
+          <h1 id="project_title">Convolutional_Neural_Network</h1>
+          <h2 id="project_tagline">Convolutional Neural Network</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1 id="convolutional-neural-networks-with-python">Convolutional Neural Networks with Python</h1>
+<p>Convolutional Neural Networks in Python using only pure <code class="highlighter-rouge">numpy</code> library.
+<br /><a href="https://doi.org/10.5281/zenodo.1317904"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.1317904.svg" alt="DOI" /></a></p>
+
+<h2 id="content">Content</h2>
+<p>Theory and experimental results (on this page):</p>
+
+<ul>
+  <li><a href="#brief-introduction-into-convolutional-neural-network">Brief Introduction into Convolutional Neural Network</a></li>
+  <li><a href="#task">Task</a></li>
+  <li><a href="#layers-of-cnn">Layers of CNN</a>
+    <ul>
+      <li><a href="#convolutional-layer">Convolutional Layer</a></li>
+      <li><a href="#pooling-layer">Pooling Layer</a></li>
+      <li><a href="#relu-layer">ReLU Layer</a></li>
+      <li><a href="#fully-connected-layer">Fully-Connected Layer</a></li>
+    </ul>
+  </li>
+  <li><a href="#architecture-of-cnn">Architecture of CNN</a></li>
+  <li><a href="#video-summary-for-introduction-into-cnn">Video Summary for Introduction into CNN</a></li>
+  <li><a href="#writing-code-in-python">Writing code in Python</a>
+    <ul>
+      <li><a href="#simple-convolution-with-numpy-only">Simple Convolution with <code class="highlighter-rouge">numpy</code> only</a></li>
+      <li><a href="#more-complex-example-with-numpy-only">More complex example with <code class="highlighter-rouge">numpy</code> only</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="brief-introduction-into-convolutional-neural-network"><a id="brief-introduction-into-convolutional-neural-network">Brief Introduction into Convolutional Neural Network</a></h3>
+<p><strong>Definition</strong>. <strong>Convolutional Neural Network</strong> (CNN, ConvNet) is a special architecture of artificial neural networks, aimed at effective image recognition, and it is a part of deep learning technologies. The working principle of <strong>CNN</strong> uses the features of the simple cells of the human visual cortex, responding to straight lines from different angles, as well as complex cells, whose reaction is associated with the activation of a certain set of simple cells. The idea of <strong>CNN</strong> is to alternate convolution layers and subsampling layers. The network structure is <strong>feedforward</strong> (without feedbacks), essentially multilayered. For training, standard methods are used, most often the method of <strong>back propagation</strong> of the error. The function of activation of neurons (transfer function) is any, at the choice of the researcher. The name of the network architecture is due to the existence of a convolution operation, the essence of which is that each fragment of the image is multiplied by the matrix (core) of convolution elementwise, and the result is summed and written to the same position of the output image.</p>
+
+<p><strong>CNN</strong> is very similar to conventional neural networks. They are also built on the basis of neurons that have learnable weights and biases. Each neuron receives some input data, performs a dot product of information and in some situations accompanies it by non-linearity. As in the case of conventional neural networks, the whole <strong>CNN</strong> expresses one differentiable score function: on the one hand it is raw pixels of the image, on the other - probability of the class or group of possible classes that characterize the picture.</p>
+
+<p>But what is the difference then? The architecture of <strong>CNN</strong> makes an explicit assumption of the form “input data is images”, which allows to encode certain properties into the architecture. Due to this feature, the preliminary announcement can be implemented more efficiently, while reducing the number of parameters in the network.</p>
+
+<p><strong>Few words about architecture of CNN</strong>. It is known that conventional neural networks receive input data (vector) and transform the information, passing it through a series of hidden layers. Each hidden layer consists of a set of neurons, where every neuron has connections with all neurons in the previous layer (fully connected) and where the neurons in the function of one layer are completely independent of each other and do not have common connections. The last fully connected layer is called the output layer, and in the classification settings it shows the class scores.</p>
+
+<p>Conventional neural networks do not scale well in the case of large-sized images. <strong>CNNs</strong> use the fact that input data consist of images, and they restrict the network building in a more reasonable way. Unlike a conventional neural network, <strong>CNN layers</strong> consist of neurons located in 3 dimensions: <strong>width, height and depth</strong>, that is, dimensions that form the volume. For example, images on the input <strong>CIFAR-10</strong> are input volumes of activation, and the volume has dimensions of <strong>32x32x3</strong>, which is width, height and depth respectively. Neurons are connected only to a small area of the layer. In addition, the resulting output layer for this data set (CIFAR-10) will be <strong>1x1x10</strong>, since by the end of the <strong>CNN architecture</strong> the full image will be reduced into a single vector of class scores.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/MLP_via_CNN.png" alt="Architecture of MLP and CNN" /></p>
+
+<p>As it is seen from the figure, every <strong>CNN layer</strong> converts 3D input volume into 3D output volume of neuron activations. Input layer contains an image with its width and height that are determined by the size of the picture, and the depth of 3 that are <strong>red, green and blue channels</strong>. The basis of the <strong>CNNs</strong> are the layers where each layer is characterized by a simple property - it converts the input data as a 3D volume into an output 3D volume with some differentiable function.</p>
+
+<p><strong>CNN</strong>s provide partial resistance to scale changes, offsets, turns, angles and other distortions. <strong>CNN</strong>s unite three architectural ideas to ensure invariance to scale, rotation and spatial distortion:</p>
+<ul>
+  <li>local two-dimensional connectivity of neurons;</li>
+  <li>common synaptic weights (provide detection of some features anywhere in the image and reduce the total number of weights);</li>
+  <li>hierarchical organization with spatial subsamples.</li>
+</ul>
+
+<p>At the moment, <strong>CNN</strong> and its modifications are considered the best in accuracy and speed algorithms for finding objects on the stage.</p>
+
+<p><br /></p>
+
+<h3 id="task"><a id="task">Task</a></h3>
+<p>The task of classifying images is the obtaining initial image as input and output its class (cat, dog, etc.) or a group of likely classes that best characterizes the image. When the computer gets the image (takes the input data), it sees an array of pixels. Depending on the resolution and size of the image, for example, the size of the array can be <strong>32x32x3</strong> (where 3 are the values of the <strong>RGB channels</strong>). Each of these numbers is assigned a value from <strong>0 to 255</strong>, which describes the intensity of the pixel at that point. These numbers are the only input data for the computer. The computer receives this matrix and displays numbers that describe the probability of the image class (<strong>75%</strong> for the cat, <strong>20%</strong> for the dog, <strong>10%</strong> for the bird, etc.).</p>
+
+<p><br /></p>
+
+<h3 id="layers-of-cnn"><a id="layers-of-cnn">Layers of CNN</a></h3>
+<p>CNN is a sequence of layers. Each layer converts one volume of activations into another by means of a differentiable function. In the CNN, several main layers are used:</p>
+<ul>
+  <li><strong>Input Layer</strong></li>
+  <li><strong>Convolutional Layer</strong></li>
+  <li><strong>ReLU Layer</strong></li>
+  <li><strong>Pooling Layer (also known as subsampling layer)</strong></li>
+  <li><strong>Fully Connected Layer</strong></li>
+</ul>
+
+<p>These layers are used to build complete <strong>CNN architecture</strong>. A simple example of CNN for the task of classifying images using <strong>CIFAR-10</strong> data set can be the following architecture shown on the figure below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/CNN_architecture.png" alt="CNN architecture" /></p>
+
+<p><strong>Input (Input Layer)</strong> - contains the original information about the image in the form of [32x32x3], where 32 is the width, another 32 is the height and 3 is the color channels - R, G, B (Red, Green and Blue).</p>
+
+<p><strong>Conv (Conolutional Layer)</strong> - is a set of maps (known also as feature maps), each of which has a filter (known also as core or kernel). The process of obtaining these maps can be described as following: the window of the filter size is going through whole image with a given step, and at each step the elemenrwise multiplication of values of local image window by filter is done, then result is summed (by adding all elements of the matrix all together) and written into the resulted output matrix of map. For example, if 12 filters are used, the output volume of the maps will be [32x32x12].</p>
+
+<p><strong>ReLU (Rectified Linear Unit Layer)</strong> - applies elementwise activation function (like f(x) = max(0, x)) with zero as threshold. In other words, it performs the following actions: if x &gt; 0, then the value remains the same, and x &lt; 0 changes this value by substituting it to 0.</p>
+
+<p><strong>Pool (Pooling Layer)</strong> - performs a downsampling operation of the spatial dimensions (width and height), as a result of which the volume can be reduced to [16×16×12]. At this stage, non-linear compaction of the feature maps is done. The logic of the process is as following: if some features have already been revealed in the previous convolution operation, then a detailed image is no longer needed for further processing, and it is compressed to less detailed image.</p>
+
+<p><strong>FC (Fully-Connected Layer)</strong> - displays a 10-dimensional vector of classes (as CIFAR-10 data set has 10 categories) to determine scores for each class. Each neuron is connected to all values in the previous volume.</p>
+
+<p>Eventually, described CNN architecture, with its set of layers, converts an input image into an output vector with probability for every class. The image belongs to the class that obtain the biggest value.</p>
+
+<p><br /></p>
+
+<h3 id="convolutional-layer"><a id="convolutional-layer">Convolutional Layer</a></h3>
+<p>A convolutional layer is a set of <strong>learnable filters</strong> (known also as <strong>core</strong> or <strong>kernel</strong>) and with the help of which a set of <strong>feature maps</strong> (known also as <strong>activation maps</strong>) are obtained. Every filter produces its own feature map, or in other words - every feature map has its own filter. Consequently, convolutional layer consists of feature maps and corresponding filters.</p>
+
+<p>The number of feature maps is determined by the requirements for the task. If we take a large number of maps, then the quality of recognition will increase, but the computational complexity will also increase. Analysis of scientific articles shows that it is recommended to take the ratio of one to two - each map of the previous layer is associated with two maps of the convolutional layer. For the first convolutional layer, the previous one is the input layer. If the input layer has three channels <strong>R, G and B</strong>, then each channel will be assosiated with two feature maps in convolutional layer, and first convolutional layer will have six feauture maps. The size of all maps in convolutional layer is the same and are calculated by the formula (although it can be different if there is a special rule to processes edges):</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Size_of_feature_map.png" alt="Size_of_feature_map" /></p>
+
+<p>where
+<br /><strong>(width, height)</strong> - is the size of obtained feature map,
+<br /><strong>map_width</strong> - is the width of previous map (or input layer if it is first convolutional layer),
+<br /><strong>map_height</strong> - is the height of previous map (or input layer if it is first convolutional layer),
+<br /><strong>kernel_width</strong> - is the width of the filter,
+<br /><strong>kernel_height</strong> - is the height of the filter.</p>
+
+<p>Filter (or kernel) slides over the entire area of the previous map and finds certain features. For example, one filter could produce the largest signal in the area of eye, mouth, or nose during training process, and another filter might reveal other features. Filter size is usually taken in the range from 2x2 to 8x8. If filter size is small, then it will not be able to identify any feature, if it’s too large, then the number of connections between neurons increases. One of the main characteristic of CNN is in the filters that have a system of <strong>shared weights</strong>. Common weights allow to reduce the number of connections between neurons (in contrast with typical multilayer network) and allow to find the same features across entire image area.</p>
+
+<p>Filter for curve detection is shown below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Filter_for_curve_detection.png" alt="Filter_for_curve_detection" /></p>
+
+<p>Filter representation in pixels is shown below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Filter_representation_in_pixels.png" alt="Filter_representation_in_pixels" /></p>
+
+<p>Filter on the image is shown below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Filter_on_the_image.jpg" alt="Filter_on_the_image" /></p>
+
+<p>Filter implementation to the receptive field on the image by elementwise multiplication is shown below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Filter_implementation.png" alt="Filter_implementation" /></p>
+
+<p>Initially, values of each feature map in convolutional layer are equal to zero. Values of filter weights are randomly set in the range from -0.5 to 0.5 (if the special pre-trained filters are not used). Filter slides over the previous map (or over area on the input image if it is first convolutional layer) and performs a convolution operation. Mathematically it can be represented with equation:</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Convolution_operation.png" alt="Convolution_operation" /></p>
+
+<p>where
+<br /><strong>f</strong>  - is an initial matrix of input image,
+<br /><strong>g</strong> - is a filter (kernel) for convolution.</p>
+
+<p>Convolution process is shown below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Convolution_process.png" alt="Convolution_process" /></p>
+
+<p>This operation can be described as follows: filter <strong>g</strong>, with its window of given size, slides over the whole image <strong>f</strong> with a given step (for example 1 or 2), then at each step elementwise multiplication process of two windows is done (filter window and appropriate image window), and result is summed and written into new matrix. Depending on the method of processing the edges of the original matrix, the resulted matrix may be less than the original, the same size or larger (in this example, obtained feature map is 3x3 size, but it can be 5x5 - the same with original input area, or even larger, or any other different size depending on the approach).</p>
+
+<p><strong>Short summary about Convolutional Layer:</strong></p>
+<ul>
+  <li><strong>Hyperparameters</strong>:
+    <ul>
+      <li>number of filters (kernels) denoted as <strong>K_number</strong>,</li>
+      <li>size of filters (spatial dimension) denoted as <strong>K_size</strong>,</li>
+      <li>step for sliding (also known as stride) denoted as <strong>Step</strong>,</li>
+      <li>processing edges by zero-padding parameter denoted as <strong>Pad</strong>.</li>
+    </ul>
+  </li>
+  <li>Takes an input volume of size <strong>Width_In × Height_In × Depth_In</strong>.</li>
+  <li>Gives an output volume of size <strong>Width_Out × Height_Out × Depth_Out</strong>, that are calculated by following equations:
+    <ul>
+      <li><strong>Width_Out = (Width_In - K_size + 2Pad) / Step + 1</strong>,</li>
+      <li><strong>Height_Out = (Height_In - K_size + 2Pad) / Step + 1</strong>,</li>
+      <li><strong>Depth_Out = K_number</strong>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>General setting for hyperparameters are: <strong>K_number = 2, K_size = 3, Step = 1, Pad = 1.</strong>
+<br />Suppose that an input volume size is: <strong>Width_In = 5, Height_In = 5, Depth_In = 3.</strong>
+<br />Then it means that there are <strong>two 3 × 3 filters</strong>, and they are applied with <strong>step 1</strong>. As a result, output volume has a spatial dimension (width and height are equal) calculated with described above equation: <strong>(5 - 3 + 2) / 1 + 1 = 5.</strong></p>
+
+<p><br /></p>
+
+<h3 id="pooling-layer"><a id="pooling-layer">Pooling Layer</a></h3>
+<p><strong>Pooling Layer</strong> (also known as <strong>subsampling layer</strong> or <strong>downsampling layer</strong>) is inserted between <strong>Convolutional Layers</strong> and aimed to reduce spatial dimension of feature maps (width and height) doing it separately for each map through depth of volume of the previous layer. When some features have already been identified in the previous convolution operation, then a detailed image is no longer needed for further processing, and it is compressed to less detailed. This operation also helps to control overfitting.</p>
+
+<p>Pooling Layer usually has the most common filters with size 2x2 and step equal to 2. Every filter in Pooling Layer is doing <strong>MAX operation</strong> choosing maximum value from 4 numbers. As an output, there is the same amount of feature maps with its depth from previous Convolutional Layer but with downsampling spatial size 2 times (by width and height). An example is shown on the figure below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Pooling_process_with_MAX.png" alt="Pooling_process" /></p>
+
+<p>Apart from MAX operation, other functions can be applied, such as average pooling or normalization pooling, but they are used rarely.</p>
+
+<p><strong>Hyperparameters</strong>:</p>
+<ul>
+  <li>size of filters (spatial dimension) denoted as <strong>K_size</strong>,</li>
+  <li>step for sliding (also known as stride) denoted as <strong>Step</strong>,</li>
+</ul>
+
+<p>Pooling layer takes an input volume of size <strong>Width_In × Height_In × Depth_In</strong> and gives an output volume of size <strong>Width_Out × Height_Out × Depth_Out</strong>, that are calculated by following equations:</p>
+<ul>
+  <li><strong>Width_Out = (Width_In - K_size) / Step + 1</strong>,</li>
+  <li><strong>Height_Out = (Height_In - K_size) / Step + 1</strong>,</li>
+  <li><strong>Depth_Out = Depth_In</strong>.</li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="relu-layer"><a id="relu-layer">ReLU Layer</a></h3>
+<p>One of the stages of Neural Network development is the choice of neuron activation function. The form of the <strong>activation function</strong> largely determines the functionality of the Neural Network and the method of its learning. The classic <strong>Back Propagation</strong> algorithm works well on two-layer and three-layer neural networks, but with further increase in depth, it becomes problematic. One of the reasons is the so-called attenuation of the gradients. As the error propagates from the output layer to the input layer on each layer, the current result is multiplied by the derivative of the activation function. The derivative of the traditional <strong>sigmoid activation function</strong> is less than unit, so after several layers the error will be close to zero. If, on the contrary, the activation function has an unbounded derivative (as, for example, a <strong>hyperbolic tangent</strong>), then an explosive increase in error can occur as it spreads, which leads to instability of the learning procedure. That is why <strong>Convolutional Layers</strong> use the <strong>ReLU (Rectified Linear Unit)</strong>, that represents a rectified linear activation function, and is expressed by the following formula:</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/ReLU_activation_function.png" alt="ReLU_activation_function" /></p>
+
+<p>Its essence lies in the fact that images become with <strong>no negative values</strong> - they are converted to 0.</p>
+
+<p>The graph of the <strong>ReLU function</strong> is shown on the figure below:</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/ReLU_activation_function_figure.png" alt="ReLU_activation_function_figure" /></p>
+
+<p><strong>Advantages</strong>:</p>
+<ul>
+  <li>
+    <p>derivative of <strong>ReLU function</strong> is either unit or zero, and therefore no growth or attenuation of the gradients can occur. Multiplying unit by the delta of the error, we get the delta error. But if we used another function, for example, a <strong>hyperbolic tangent</strong>, then the delta error could either decrease, or increase. Hyperbolic tangent derivative returns a number with different sign and the magnitude that can greatly affect the attenuation or expansion of the gradient;</p>
+  </li>
+  <li>
+    <p>calculation of sigmoid and hyperbolic tangent requires <strong>large computational operations</strong> such as exponentiation, while ReLU can be implemented using a simple threshold transformation of matrices;</p>
+  </li>
+  <li>
+    <p>cuts unnecessary details for negative values in image matrices.</p>
+  </li>
+</ul>
+
+<p>It can be noted that ReLU is not always reliable enough and in the process of learning it can fail for some neurons. For example, a large gradient passing through the ReLU can lead to an update of the weights that the given neuron is never activated again. If this happens, then, from now on, the gradient passing through this neuron will always be zero. Accordingly, this neuron will be disabled. For example, if the learning rate is too high, it may turn out that up to 50% of ReLUs will never be activated. This problem is solved by choosing the proper learning rate.</p>
+
+<p><br /></p>
+
+<h3 id="fully-connected-layer"><a id="fully-connected-layer">Fully-Connected Layer</a></h3>
+<p>The last type of layers is <strong>Fully Connected Layer</strong>. Which is a conventional <strong>Multilayer Perceptron</strong>. Neurons in the last FC Layer have full connections with all the activations in the previous layer. The calculation of the neuron values in the FC Layer can be described by the formula:</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/FC_neurons_value.png" alt="FC_neurons_value" /></p>
+
+<p>where
+<br /><strong>f()</strong> - activation function;
+<br /><strong>x</strong> - feature map (activation map) <strong><em>j</em></strong> of layer <strong><em>l</em></strong>;
+<br /><strong>w</strong> - weights of layer <strong><em>l</em></strong>;
+<br /><strong>b</strong> - bias offset of layer <strong><em>l</em></strong>.</p>
+
+<p>After FC Layer, there is the last one - <strong>Output Layer</strong> of network, where <strong>Softmax Function</strong> is used to convert the outputs into probability values for each class as it is shown on the example on the figure below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Softmax_function.png" alt="Softmax_function" /></p>
+
+<p><br /></p>
+
+<h3 id="architecture-of-cnn"><a id="architecture-of-cnn">Architecture of CNN</a></h3>
+<p>The architecture of CNN is defined by the problem being solved. Below the typical architectures are shown.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Architecture_of_CNN.png" alt="Architecture_of_CNN" /></p>
+
+<p>In the second example there is one <strong>Conv layer</strong> before every <strong>Pooling layer</strong>.
+<br />There are variety of different architectures that alternate main CNN layers between each other.</p>
+
+<p><br /></p>
+
+<h3 id="video-summary-for-introduction-into-cnn"><a id="video-summary-for-introduction-into-cnn">Video Summary for Introduction into CNN</a></h3>
+<p>Video Introduction into Convolutional NN with Python from scratch (summary):
+<br /><a href="https://www.youtube.com/watch?v=04G3kRFI7pc" target="_blank"><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Video_Introduction_into_ConvNet.bmp" alt="Convolutional NN from scratch" /></a></p>
+
+<p><br /></p>
+
+<h3 id="writing-code-in-python"><a id="writing-code-in-python">Writing code in Python</a></h3>
+<p>Experimental results on convolution applied to images with different filters.</p>
+
+<h3 id="simple-convolution-with-numpy-only"><a id="simple-convolution-with-numpy-only">Simple Convolution with <code class="highlighter-rouge">numpy</code> only</a></h3>
+<p>Taking greyscale image and slicing it into the channels. Checking if all channels are identical.
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Importing needed libraries</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="c"># Creating an array from image data</span>
+<span class="n">image_GreyScale</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="s">"images/owl_greyscale.jpg"</span><span class="p">)</span>
+<span class="n">image_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image_GreyScale</span><span class="p">)</span>
+
+<span class="c"># Checking the type of the array</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">image_np</span><span class="p">))</span>  <span class="c"># &lt;class 'numpy.ndarray'&gt;</span>
+<span class="c"># Checking the shape of the array</span>
+<span class="k">print</span><span class="p">(</span><span class="n">image_np</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c"># (1280, 830, 3)</span>
+
+<span class="c"># Showing image with every channel separately</span>
+<span class="n">channel_0</span> <span class="o">=</span> <span class="n">image_np</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">channel_1</span> <span class="o">=</span> <span class="n">image_np</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">channel_2</span> <span class="o">=</span> <span class="n">image_np</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="c"># Checking if all channels are the same</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">channel_0</span><span class="p">,</span> <span class="n">channel_1</span><span class="p">))</span>  <span class="c"># True</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">channel_1</span><span class="p">,</span> <span class="n">channel_2</span><span class="p">))</span>  <span class="c"># True </span>
+</code></pre></div></div>
+
+<p>As it is seen, all three channels are identical as it is shown on the figure below.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/GreyScaled_image_with_three_identical_channels.png" alt="GreyScaled_image_with_three_identical_channels" /></p>
+
+<p>For the further processing it is enough to work only with one channel.
+<br />In order to get <strong>feature map</strong> (convolved output image) in the same size, it is needed to set <strong>Hyperparameters:</strong></p>
+<ul>
+  <li>Filter (kernel) size, <strong>K_size</strong> = 3</li>
+  <li>Step for sliding (stride), <strong>Step</strong> = 1</li>
+  <li>Processing edges (zero valued frame around image), <strong>Pad</strong> = 1</li>
+</ul>
+
+<p>Consequently, output image size is (width and height are the same):</p>
+<ul>
+  <li><strong>Width_Out = (Width_In - K_size + 2 * Pad) / Step + 1</strong></li>
+</ul>
+
+<p>Imagine, that input image is <strong>5x5</strong> spatial size (width and height), then output image:</p>
+<ul>
+  <li><strong>Width_Out = (5 - 3 + 2 * 1)/1 + 1 = 5</strong>, and this is equal to input image.</li>
+</ul>
+
+<p>Taking so called <strong>‘identity’</strong> filter and applying <strong>convolution operation</strong> with it to the one channel of input image.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Identity_Filter.png" alt="Identity_Filter" /></p>
+
+<p>Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Taking as input image first channel as array</span>
+<span class="n">input_image</span> <span class="o">=</span> <span class="n">image_np</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="c"># Checking the shape</span>
+<span class="k">print</span><span class="p">(</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c"># (1080, 1920)</span>
+
+<span class="c"># Applying to the input image Pad frame with zero values</span>
+<span class="c"># Using NumPy method 'pad'</span>
+<span class="n">input_image_with_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">input_image</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s">'constant'</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c"># Checking the shape</span>
+<span class="k">print</span><span class="p">(</span><span class="n">input_image_with_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c"># (1082, 1922)</span>
+
+<span class="c"># Defining so called 'identity' filter with size 3x3</span>
+<span class="c"># By applying this filter resulted convolved image has to be the same with input image</span>
+<span class="n">filter_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="c"># Checking the shape</span>
+<span class="k">print</span><span class="p">(</span><span class="n">filter_0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c"># (3, 3)</span>
+
+<span class="c"># Preparing zero valued output array for convolved image</span>
+<span class="c"># The shape is the same with input image according to the chosen Hyperparameters</span>
+<span class="n">output_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c"># Implementing convolution operation</span>
+<span class="c"># Going through all input image with pad frame</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_image_with_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_image_with_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c"># Extracting 3x3 patch (the same size with filter) from input image with pad frame</span>
+        <span class="n">patch_from_input_image</span> <span class="o">=</span> <span class="n">input_image_with_pad</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c"># Applying elementwise multiplication and summation - this is convolution operation</span>
+        <span class="n">output_image</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch_from_input_image</span> <span class="o">*</span> <span class="n">filter_0</span><span class="p">)</span>
+
+<span class="c"># Checking if output image and input image are the same</span>
+<span class="c"># Because of the filter with only unit in the center (identity filter), convolution operation gives the same image</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">input_image</span><span class="p">,</span> <span class="n">output_image</span><span class="p">))</span>  <span class="c"># True</span>
+</code></pre></div></div>
+
+<p>As a result output image is identical to the input image, because of the <strong>‘identity’ filter</strong> that has the only unit in the middle.</p>
+
+<p>Implementing another standard filters for edge detection.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Filters_for_Edge_detection.png" alt="Filters_for_Edge_detection" /></p>
+
+<p>Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Defining standard filters (kernel) with size 3x3 for edge detection</span>
+<span class="n">filter_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">filter_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">filter_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="c"># Checking the shape</span>
+<span class="k">print</span><span class="p">(</span><span class="n">filter_1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">filter_2</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">filter_3</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c"># (3, 3) (3, 3) (3, 3)</span>
+</code></pre></div></div>
+
+<p>In order to prevent appearing values that are more than 255 or less than 0, function is defined for corrections.
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># The following function is defined</span>
+<span class="k">def</span> <span class="nf">values_for_image_pixels</span><span class="p">(</span><span class="n">x_array</span><span class="p">):</span>
+    <span class="c"># Preparing resulted array</span>
+    <span class="n">result_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c"># Going through all elements of the given array</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="c"># Checking if the element is in range [0, 255]</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">255</span><span class="p">:</span>
+                <span class="n">result_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">x_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">result_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_array</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
+    <span class="c"># Returning edited array</span>
+    <span class="k">return</span> <span class="n">result_array</span>
+</code></pre></div></div>
+
+<p>Implementing convolution operations with three different filters separately.
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Preparing zero valued output arrays for convolved images</span>
+<span class="c"># The shape is the same with input image according to the chosen Hyperparameters</span>
+<span class="n">output_image_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">output_image_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">output_image_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">input_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c"># Implementing convolution operation</span>
+<span class="c"># Going through all input image with pad frame</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_image_with_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_image_with_pad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c"># Extracting 3x3 patch (the same size with filter) from input image with pad frame</span>
+        <span class="n">patch_from_input_image</span> <span class="o">=</span> <span class="n">input_image_with_pad</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c"># Applying elementwise multiplication and summation - this is convolution operation</span>
+        <span class="c"># With filter_1</span>
+        <span class="n">output_image_1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch_from_input_image</span> <span class="o">*</span> <span class="n">filter_1</span><span class="p">)</span>
+        <span class="c"># With filter_2</span>
+        <span class="n">output_image_2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch_from_input_image</span> <span class="o">*</span> <span class="n">filter_2</span><span class="p">)</span>
+        <span class="c"># With filter_3</span>
+        <span class="n">output_image_3</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch_from_input_image</span> <span class="o">*</span> <span class="n">filter_3</span><span class="p">)</span>
+
+
+<span class="c"># Applying function to get rid of negative values and values that are more than 255</span>
+<span class="n">output_image_1</span> <span class="o">=</span> <span class="n">values_for_image_pixels</span><span class="p">(</span><span class="n">output_image_1</span><span class="p">)</span>
+<span class="n">output_image_2</span> <span class="o">=</span> <span class="n">values_for_image_pixels</span><span class="p">(</span><span class="n">output_image_2</span><span class="p">)</span>
+<span class="n">output_image_3</span> <span class="o">=</span> <span class="n">values_for_image_pixels</span><span class="p">(</span><span class="n">output_image_3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>When convolution process is done, it is possible to see the results on the figures.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Convolution_with_filters_for_edge_detection.png" alt="Convolution_with_filters_for_edge_detection" /></p>
+
+<p>Full code is available here: <a href="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/Codes/CNN_Simple_Convolution.py">CNN_Simple_Convolution.py</a></p>
+
+<p><br /></p>
+
+<h3 id="more-complex-example-with-numpy-only"><a id="more-complex-example-with-numpy-only">More complex example with <code class="highlighter-rouge">numpy</code> only</a></h3>
+<p>Consider more complex example of convolving input image with following architecture:
+<br /><code class="highlighter-rouge">Input</code> –&gt; <code class="highlighter-rouge">Conv --&gt; ReLU --&gt; Pool</code> –&gt; <code class="highlighter-rouge">Conv --&gt; ReLU --&gt; Pool</code> –&gt; <code class="highlighter-rouge">Conv --&gt; ReLU --&gt; Pool</code></p>
+
+<p><strong>Hyperparameters</strong> is as following:</p>
+
+<ul>
+  <li><strong>Filter</strong> (kernel) size, K_size = 3</li>
+  <li><strong>Step</strong> for sliding (stride), Step = 1</li>
+  <li><strong>Processing edges</strong> (zero valued frame around image), Pad = 1</li>
+</ul>
+
+<p>Consequently, output image size is as following:</p>
+<ul>
+  <li><strong>Width_Out</strong> = (Width_In - K_size + 2 * Pad) / Step + 1</li>
+  <li><strong>Height_Out</strong> = (Height_In - K_size + 2 * Pad) / Step + 1</li>
+</ul>
+
+<p>If an input image is 50x50 spatial size (width and height), then output image:</p>
+<ul>
+  <li>Width_Out = Height_Out = (50 - 3 + 2 * 1)/1 + 1 = 50</li>
+</ul>
+
+<p>Input image is <strong>GrayScale</strong> with three identical channels.
+<br />Preparing function for <strong>2D Convolution</strong> - just one image and one filter.
+<br />In this example <strong>for</strong> loops are used in order to deeply understand the process itself. But this approach is computationally expensive and in further examples <strong>Fast Fourier Transform</strong> will be used instead.<br />
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Creating function for 2D convolution operation</span>
+<span class="k">def</span> <span class="nf">convolution_2d</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="c"># Size of the filter</span>
+    <span class="n">k_size</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c"># Calculating spatial size - width and height</span>
+    <span class="n">width_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">k_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">height_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">k_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># Preparing zero valued output array for convolved image</span>
+    <span class="n">output_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">width_out</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">height_out</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">))</span>
+
+    <span class="c"># Implementing 2D convolution operation</span>
+    <span class="c"># Going through all input image</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">k_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">k_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c"># Extracting patch (the same size with filter) from input image</span>
+            <span class="n">patch_from_image</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">k_size</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">k_size</span><span class="p">]</span>
+            <span class="c"># Applying elementwise multiplication and summation - this is convolution operation</span>
+            <span class="n">output_image</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">patch_from_image</span> <span class="o">*</span> <span class="nb">filter</span><span class="p">)</span>
+
+    <span class="c"># Returning result</span>
+    <span class="k">return</span> <span class="n">output_image</span>
+</code></pre></div></div>
+
+<p>Next, preparing function for <strong>CNN Layer</strong>.
+<br />Firstly, as input there is an image with three identical channels. That means every filter has to have three channels in depth also. If we consider second CNN Layer, then as input there is a set of feature maps produced by the first CNN Layer. It can be understood easier if we imagine that that set of feature maps is one image with its channels in depth. For example, first CNN Layer with four filters produces four feature maps that are input as one image with four channels for the second CNN Layer. Consequently, every filter for the second CNN Layer has to have four channels in depth also. Figure below shows process.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/Convolution_Process_P.png" alt="Convolution_Process_P" /></p>
+
+<p>Every filter with its channels in depth is convolved with input image (feature maps) with its depth appropriately. For example, first channel of the filter is convolving appropriate area in the first channel of input image, and second channel of the filter is convolving appropriate area (spatially the same as in the first channel) in the second channel of input image and so on. Result is summed up and written in appropriate cell of output feature map.</p>
+
+<p>Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Creating function for CNN Layer</span>
+<span class="k">def</span> <span class="nf">cnn_layer</span><span class="p">(</span><span class="n">image_volume</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c"># Note: image here can be a volume of feature maps, obtained in the previous layer</span>
+
+    <span class="c"># Applying to the input image volume Pad frame with zero values for all channels</span>
+    <span class="c"># Preparing zero valued array</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">image_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">image_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">image_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="c"># Going through all channels from input volume</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="c"># Using NumPy method 'pad'</span>
+        <span class="c"># If Pad=0 the resulted image will be the same as input image</span>
+        <span class="n">image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">image_volume</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">p</span><span class="p">],</span> <span class="p">(</span><span class="n">pad</span><span class="p">,</span> <span class="n">pad</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s">'constant'</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c"># Using following equations for calculating spatial size of output image volume:</span>
+    <span class="c"># Width_Out = (Width_In - K_size + 2*Pad) / Step + 1</span>
+    <span class="c"># Height_Out = (Height_In - K_size + 2*Pad) / Step + 1</span>
+    <span class="c"># Depth_Out = K_number</span>
+    <span class="c"># Size of the filter</span>
+    <span class="n">k_size</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c"># Depth (number) of output feature maps - is the same with number of filters</span>
+    <span class="c"># Note: this depth will also be as number of channels for input image for the next layer</span>
+    <span class="n">depth_out</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># Calculating spatial size - width and height</span>
+    <span class="n">width_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">image_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">k_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">height_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">image_volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">k_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># Creating zero valued array for output feature maps</span>
+    <span class="n">feature_maps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">width_out</span><span class="p">,</span> <span class="n">height_out</span><span class="p">,</span> <span class="n">depth_out</span><span class="p">))</span>  <span class="c"># has to be tuple with numbers</span>
+
+    <span class="c"># Implementing convolution of image with filters</span>
+    <span class="c"># Note: or convolving volume of feature maps, obtained in the previous layer, with new filters</span>
+    <span class="n">n_filters</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c"># For every filter</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>
+        <span class="c"># Initializing convolved image</span>
+        <span class="n">convolved_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">width_out</span><span class="p">,</span> <span class="n">height_out</span><span class="p">))</span>  <span class="c"># has to be tuple with numbers</span>
+
+        <span class="c"># For every channel of the image</span>
+        <span class="c"># Note: or for every feature map from its volume, obtained in the previous layer</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="c"># Convolving every channel (depth) of the image with every channel (depth) of the current filter</span>
+            <span class="c"># Result is summed up</span>
+            <span class="n">convolved_image</span> <span class="o">+=</span> <span class="n">convolution_2d</span><span class="p">(</span><span class="n">image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">],</span> <span class="nb">filter</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">pad</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="c"># Writing results into current output feature map</span>
+        <span class="n">feature_maps</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">convolved_image</span>
+
+    <span class="c"># Returning resulted feature maps array</span>
+    <span class="k">return</span> <span class="n">feature_maps</span>
+</code></pre></div></div>
+
+<p>Next, preparing function for that substitute pixel values that are more than 255.
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Creating function for replacing pixel values that are more than 255 with 255</span>
+<span class="k">def</span> <span class="nf">image_pixels_255</span><span class="p">(</span><span class="n">maps</span><span class="p">):</span>
+    <span class="c"># Preparing array for output result</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c"># Replacing all elements that are more than 255 with 255</span>
+    <span class="c"># Going through all channels</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="c"># Going through all elements</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="c"># Checking if the element is less than 255</span>
+                <span class="k">if</span> <span class="n">maps</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">255</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">maps</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
+    <span class="c"># Returning resulted array</span>
+    <span class="k">return</span> <span class="n">r</span>
+</code></pre></div></div>
+
+<p>Next, preparing function for <strong>ReLU Layer</strong>. Here, all values that are negative is substituted with 0.
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Creating function for ReLU Layer</span>
+<span class="k">def</span> <span class="nf">relu_layer</span><span class="p">(</span><span class="n">maps</span><span class="p">):</span>
+    <span class="c"># Preparing array for output result</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span>
+    <span class="c"># Using 'np.where' setting condition that every element in 'maps' has to be more than appropriate element in 'r'</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">maps</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">,</span> <span class="n">maps</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="c"># Returning resulted array</span>
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></div>
+
+<p>Finally, preparing function for <strong>Pooling Layer</strong>. Obtained feature maps are downsampled in twice spatially with following parameters:</p>
+<ul>
+  <li><strong>Size</strong> of the filter is 2.</li>
+  <li><strong>Step</strong> for sliding is 2.</li>
+</ul>
+
+<p><strong>MaxPooling</strong> operation is implemented, that means that among four numbers (filter size 2x2) the maximum is chosen and is written in output feature map.
+<br />Consider following part of the code:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Creating function for Pooling Layer</span>
+<span class="k">def</span> <span class="nf">pooling_layer</span><span class="p">(</span><span class="n">maps</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c"># Calculating spatial size of output resulted array - width and height</span>
+    <span class="c"># As our image has the same spatial size as input image (270, 480) according to the chosen Hyperparameters</span>
+    <span class="c"># Then we can use following equations</span>
+    <span class="n">width_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">size</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">height_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">size</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># As filter size for pooling operation is 2x2 and step is 2</span>
+    <span class="c"># Then spatial size of pooling image will be twice less (135, 240)</span>
+    <span class="c"># Preparing zero valued output array for pooling image</span>
+    <span class="n">pooling_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">width_out</span><span class="p">,</span> <span class="n">height_out</span><span class="p">,</span> <span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="c"># Implementing pooling operation</span>
+    <span class="c"># For all channels</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="c"># Going through all image with step=2</span>
+        <span class="c"># Preparing indexes for pooling array</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+            <span class="c"># Preparing indexes for pooling array</span>
+            <span class="n">jj</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                <span class="c"># Extracting patch (the same size with filter) from input image</span>
+                <span class="n">patch_from_image</span> <span class="o">=</span> <span class="n">maps</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">size</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">size</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span>
+                <span class="c"># Applying max pooling operation - choosing maximum element from the current patch</span>
+                <span class="n">pooling_image</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">max</span><span class="p">(</span><span class="n">patch_from_image</span><span class="p">)</span>
+                <span class="c"># Increasing indexing for polling array</span>
+                <span class="n">jj</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c"># Increasing indexing for polling array</span>
+            <span class="n">ii</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c"># Returning resulted array</span>
+    <span class="k">return</span> <span class="n">pooling_image</span>
+</code></pre></div></div>
+
+<p>When following architecture <strong>[ Conv - ReLU - Pool ] * 3</strong> is implemented, it is possible to see the results on the figure.</p>
+
+<p><img src="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/images/CNN_More_complex_example.gif" alt="CNN_More_complex_example" /></p>
+
+<p>Full code is available here: <a href="https://github.com/sichkar-valentyn/Neural_Networks_for_Computer_Vision/blob/master/Codes/CNN_More_complex_example.py">CNN_More_complex_example.py</a></p>
+
+<p><br /></p>
+
+<h3 id="mit-license">MIT License</h3>
+<h3 id="copyright-c-2018-valentyn-n-sichkar">Copyright (c) 2018 Valentyn N Sichkar</h3>
+<h3 id="githubcomsichkar-valentyn">github.com/sichkar-valentyn</h3>
+<h3 id="reference-to">Reference to:</h3>
+<p>Valentyn N Sichkar. Neural Networks for computer vision in autonomous vehicles and robotics // GitHub platform. DOI: 10.5281/zenodo.1317904</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">Convolutional_Neural_Network maintained by <a href="https://github.com/sichkar-valentyn">sichkar-valentyn</a></p>
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+  </body>
+</html>
