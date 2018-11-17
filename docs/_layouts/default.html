@@ -82,7 +82,7 @@
 
 <p>Conventional neural networks do not scale well in the case of large-sized images. <strong>CNNs</strong> use the fact that input data consist of images, and they restrict the network building in a more reasonable way. Unlike a conventional neural network, <strong>CNN layers</strong> consist of neurons located in 3 dimensions: <strong>width, height and depth</strong>, that is, dimensions that form the volume. For example, images on the input <strong>CIFAR-10</strong> are input volumes of activation, and the volume has dimensions of <strong>32x32x3</strong>, which is width, height and depth respectively. Neurons are connected only to a small area of the layer. In addition, the resulting output layer for this data set (CIFAR-10) will be <strong>1x1x10</strong>, since by the end of the <strong>CNN architecture</strong> the full image will be reduced into a single vector of class scores.</p>
 
-<p><img src="/Convolutional_Neural_Network/blob/master/docs/images/MLP_via_CNN.png" alt="Architecture of MLP and CNN" /></p>
+<p><img src="images/MLP_via_CNN.png" alt="Architecture of MLP and CNN" /></p>
 
 <p>As it is seen from the figure, every <strong>CNN layer</strong> converts 3D input volume into 3D output volume of neuron activations. Input layer contains an image with its width and height that are determined by the size of the picture, and the depth of 3 that are <strong>red, green and blue channels</strong>. The basis of the <strong>CNNs</strong> are the layers where each layer is characterized by a simple property - it converts the input data as a 3D volume into an output 3D volume with some differentiable function.</p>
 
@@ -114,7 +114,7 @@
 
 <p>These layers are used to build complete <strong>CNN architecture</strong>. A simple example of CNN for the task of classifying images using <strong>CIFAR-10</strong> data set can be the following architecture shown on the figure below.</p>
 
-<p><img src="/images/CNN_architecture.png" alt="CNN architecture" /></p>
+<p><img src="images/CNN_architecture.png" alt="CNN architecture" /></p>
 
 <p><strong>Input (Input Layer)</strong> - contains the original information about the image in the form of [32x32x3], where 32 is the width, another 32 is the height and 3 is the color channels - R, G, B (Red, Green and Blue).</p>
 
